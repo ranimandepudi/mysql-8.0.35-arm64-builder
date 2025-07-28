@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y \
     libssl-dev libncurses-dev libaio-dev \
     git libevent-dev libz-dev \
     libtirpc-dev libreadline-dev \
-    liblz4-dev libedit-dev curl ca-certificates \
+    liblz4-dev libedit-dev curl ca-certificates unzip \
     && rm -rf /var/lib/apt/lists/*
 
 # Create working directory
