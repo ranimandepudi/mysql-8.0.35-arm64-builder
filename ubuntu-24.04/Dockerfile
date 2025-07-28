@@ -17,7 +17,8 @@ RUN apt-get update && apt-get install -y \
 # Create working directory
 WORKDIR /build
 
-ADD https://github.com/ranimandepudi/mysql-8.0.35-arm64-builder/releases/download/mysql-arm64-8.0.35/mysql-boost-8.0.35-arm64-src.tar.gz .
+ADD https://github.com/ranimandepudi/mysql-8.0.35-arm64-builder/releases/download/mysql-arm64-8.0.35/mysql-boost-8.0.35-arm64-src.tar.gz.zip .
+RUN unzip mysql-boost-8.0.35-arm64-src.tar.gz.zip && tar -xzf mysql-boost-8.0.35-arm64-src.tar.gz
 # Extract source
 RUN tar -xzf mysql-boost-8.0.35-arm64-src.tar.gz
 
