@@ -1,0 +1,43 @@
+name: Build MySQL Arm64 and Publish .deb
+
+on:
+  push:
+    tags:
+      - 'mysql-arm64-*'
+
+jobs:
+  build-mysql-deb:
+    runs-on: ubuntu-24.04-arm
+    name: Build MySQL .deb and upload to GitHub Release
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Extract MySQL version from tag
+        id: vars
+        run: echo "VERSION=${GITHUB_REF#refs/tags/mysql-arm64-}" >> $GITHUB_OUTPUT
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image
+        run: |
+          docker build -t mysql-builder:${{ steps.vars.outputs.VERSION }} -f ubuntu-24.04/Dockerfile .
+
+      - name: Extract built .deb from container
+        id: extract
+        run: |
+          container_id=$(docker create mysql-builder:${{ steps.vars.outputs.VERSION }})
+          docker cp "$container_id":/usr/local/mysql.deb ./mysql-${{ steps.vars.outputs.VERSION }}-arm64.deb
+          docker rm "$container_id"
+
+      - name: Upload .deb to GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: mysql-${{ steps.vars.outputs.VERSION }}-arm64.deb
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Confirm uploaded file checksum
+        run: sha256sum mysql-${{ steps.vars.outputs.VERSION }}-arm64.deb
