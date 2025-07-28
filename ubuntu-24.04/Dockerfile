@@ -45,14 +45,8 @@ RUN cmake .. \
   -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=OFF
 
 # Compile and install
-RUN make -j$(nproc) && make install
+RUN make -j$(nproc) && make package
+RUN find . -name "*.deb" -exec cp {} /usr/local/mysql.deb \;
+RUN rm -rf /build/mysql-8.0.35*
 
-# Export the .deb (you should have created this file earlier via dpkg-deb)
-# Adjust the path if your .deb is generated elsewhere
-RUN cp /build/mysql-8.0.35/build/mysql-8.0.35-arm64.deb /usr/local/mysql.deb
-
-# Optional: Clean up build artifacts to reduce image size
-RUN rm -rf /build/mysql-8.0.35
-
-# Entrypoint (noop - not meant to run the server in this image)
 CMD ["/usr/local/mysql/bin/mysqld", "--version"]
