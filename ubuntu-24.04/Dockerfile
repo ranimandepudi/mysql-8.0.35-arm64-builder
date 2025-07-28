@@ -48,6 +48,10 @@ RUN cmake .. \
 # Compile and install
 RUN make -j$(nproc) && make install
 
+# Export the .deb (you should have created this file earlier via dpkg-deb)
+# Adjust the path if your .deb is generated elsewhere
+RUN cp /build/mysql-8.0.35/build/mysql-8.0.35-arm64.deb /usr/local/mysql.deb
+
 # Optional: Clean up build artifacts to reduce image size
 RUN rm -rf /build/mysql-8.0.35
 
