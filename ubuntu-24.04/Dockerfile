@@ -46,7 +46,7 @@ RUN cmake .. \
 
 # Compile and install
 RUN make -j$(nproc) && make package
-RUN find . -name "*.deb" -exec cp {} /usr/local/mysql.deb \;
+RUN find . -name "*.deb" -exec cp {} /root/mysql-8.0.35-arm64.deb \;
 RUN rm -rf /build/mysql-8.0.35*
 
 CMD ["/usr/local/mysql/bin/mysqld", "--version"]

@@ -29,7 +29,8 @@ jobs:
         id: extract
         run: |
           container_id=$(docker create mysql-builder:${{ steps.vars.outputs.VERSION }})
-          docker cp "$container_id":/usr/local/mysql.deb ./mysql-${{ steps.vars.outputs.VERSION }}-arm64.deb
+          path=$(docker container start -a "$container_id" > /dev/null 2>&1; docker export "$container_id" | tar -t | grep '\.deb$' | head -n 1)
+          docker cp "$container_id":"/$path" "./mysql-${{ steps.vars.outputs.VERSION }}-arm64.deb"
           docker rm "$container_id"
 
       - name: Upload .deb to GitHub Release
